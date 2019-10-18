@@ -178,37 +178,6 @@ def dailySeries(data):
     data = datetimeSorted(data)
     return data
 
-###############################################################################
-# Utilizando as funções para trabalhar os dados
-    
-irape_date = '01-06-2006' #2002
-itapebi_date = '01-02-2003' #1999
-
-# UTILIZANDO DADOS DA ESTAÇÃO IRAPE
-irapevazao = stationCodetoPath(vazoes, 54140000) # itapebi é a estação nº 54140000
-
-# imediatamente depois da irape
-graomogolchuva = stationCodetoPath(chuvas, 1642007) 
-graomogolcota = stationCodetoPath(cotas, 54150000)
-graomogolvazao = stationCodetoPath(vazoes, 54150000)
-
-# UTILIZANDO DADOS DA ESTAÇÃO ITAPEBI
-itapebichuva = stationCodetoPath(chuvas, 1539006) # itapebi é a estação nº 1539006, essa fica na cidade
-itapebivazao = stationCodetoPath(vazoes, 54940000) # essa fica na hirelétrica
-
-# imediatamente depois da itapebi
-belmontecota = stationCodetoPath(cotas, 54950000)
-belmontevazao = stationCodetoPath(vazoes, 54950000)
-
-# UTILIZANDO DADOS DA ESTAÇÃO BELMONTE
-belmontechuva = stationCodetoPath(chuvas, 1538001) 
-
-data = stationData(graomogolcota) # usando os dados dessa estação
-data = dailyOccurences(data,'Cota01') # apenas as ocorrencias diárias
-data = dailySeries(data) # no formato de série temporal
-stationLineplot(data,'value','2006') #plotar o gráfico de linha
-
-
 def checkStation(code):
     print('Checado em: chuvas, vazoes, cotas')
     return code in stationsAt(chuvas), code in stationsAt(vazoes), code in stationsAt(cotas)
