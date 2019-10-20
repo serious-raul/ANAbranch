@@ -1,13 +1,14 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sat Oct 19 18:24:16 2019
 
-@author: familia
+ANAbranch(jequitinhonha v2.0)
 """
 ###############################################################################
 
-import anabranch 
+import anabranch as ab # funções para trabalhar com os arquivos da ANA
+import keystations as ks # estações do jequitinhonha importantes para o estudo
+''' Bibliotecas necessárias para o ARIMA '''
 import warnings
 import itertools
 import numpy as np
@@ -15,30 +16,38 @@ import pandas as pd
 import seaborn as sns
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
-#Set color, type and size of plots
+
+# Cor, tipo e forma dos Gráficos
 plt.style.use('fivethirtyeight')
 sns.set(style="darkgrid")
 sns.set(rc={'figure.figsize':(11.7, 8.27)})
-
-data = anabranch.graomogolvazao
-data = anabranch.stationData(data) # usando os dados dessa estação
-data = anabranch.dailyOccurences(data) # apenas as ocorrencias diárias
-data = anabranch.dailySeries(data) # no formato de série temporal
-data = anabranch.datetimeSorted(data)
-data = anabranch.targetVar(data,'value')
-data = data[data['Data'] > '1975']
-data = data[data['Data'] < '2005']
-data = data.set_index('Data')
+sns.set_context("paper", rc={"lines.linewidth": 2})
 
 ###############################################################################
 
-y = data
+sample = ks.graomogolvazao # usando os dados dessa estação
+
+data = ab.stationData(sample) # na forma de dataframe
+data = ab.dailyOccurences(data) # apenas as ocorrencias diárias
+data = ab.dailySeries(data) # no formato de série temporal
+data = ab.datetimeSorted(data) # em ordem cronológica
+data = ab.targetVar(data,'value') # apenas a variável alvo
+#data = data[data['Data'] > '1975'] # entre 1975
+data = data[data['Data'] < '2006'] # e 2006
+data = data.set_index('Data') # usando as Datas como índice
+
+###############################################################################
+
+y = data # como os dados estão no formato correto podemos definilo como 'y'
 y = y['value'].resample('MS').mean()
 y.dropna(inplace=True)
 
 y.plot(figsize=(11.7, 8.27))
 
 plt.show(sns)
+
+sns.lineplot(x=data.index, y=data['value'], data=data)
+sns.lineplot(x=data.index, y=data['value'].mean(), data=data)
 
 ###############################################################################
 
@@ -47,7 +56,7 @@ rcParams['figure.figsize'] = 11.7, 8.27
 
 y.isnull().sum()
 
-decomposition = sm.tsa.seasonal_decompose(y, model='additive',freq=12)
+decomposition = sm.tsa.seasonal_decompose(y, model='additive', freq=12)
 fig = decomposition.plot()
 plt.show(sns)
 
@@ -69,41 +78,8 @@ print('SARIMAX: {} x {}'.format(pdq[2], seasonal_pdq[3]))
 print('SARIMAX: {} x {}'.format(pdq[2], seasonal_pdq[4]))
 
 ###############################################################################
-'''
-#ORIGINAL CODE
-warnings.filterwarnings("ignore") # specify to ignore warning messages
 
-for param in pdq:
-    for param_seasonal in seasonal_pdq:
-        try:
-            mod = sm.tsa.statespace.SARIMAX(y,
-                                            order=param,
-                                            seasonal_order=param_seasonal,
-                                            enforce_stationarity=False,
-                                            enforce_invertibility=False)
-
-            results = mod.fit()
-
-            print('ARIMA{}x{}12 - AIC:{}'.format(param, param_seasonal, results.aic))
-        except:
-            continue
-
-mod = sm.tsa.statespace.SARIMAX(y,
-                                order=(1, 1, 1),
-                                seasonal_order=(1, 1, 1, 12),
-                                enforce_stationarity=False,
-                                enforce_invertibility=False)
-
-results = mod.fit()
-
-print(results.summary().tables[1])
-
-results.plot_diagnostics(figsize=(15, 12))
-plt.show(sns)
-'''
-###############################################################################
-
-#FORUMS CODE
+#\BEGIN{FORUM CODE}
 warnings.filterwarnings("ignore") # specify to ignore warning messages
 AIC_list = pd.DataFrame({}, columns=['param','param_seasonal','AIC'])
 for param in pdq:
@@ -141,8 +117,9 @@ print("### Min_AIC_list ### \n{}".format(Min_AIC_list))
 
 print(results.summary().tables[1])
 
-results.plot_diagnostics(figsize=(15, 12))
+results.plot_diagnostics(figsize=(11.7, 8.27))
 plt.show(sns)
+#\END{FORUM CODE}
 
 ###############################################################################
 
@@ -174,7 +151,7 @@ print('The Mean Squared Error of our forecasts is {}'.format(round(mse, 2)))
 pred_dynamic = results.get_prediction(start=pd.to_datetime('1998-01-01').tz_localize('UTC'), dynamic=True, full_results=True)
 pred_dynamic_ci = pred_dynamic.conf_int()
 
-ax = y['1990':].plot(label='observed', figsize=(20, 15))
+ax = y['1990':].plot(label='observed', figsize=(11.7, 8.27))
 pred_dynamic.predicted_mean.plot(label='Dynamic Forecast', ax=ax)
 
 ax.fill_between(pred_dynamic_ci.index,
@@ -191,7 +168,7 @@ plt.legend()
 plt.show(sns)
 
 ###############################################################################
-
+'''
 # Extract the predicted and true values of our time series
 y_forecasted = pred_dynamic.predicted_mean
 y_truth = y['1998-01-01':]
@@ -206,7 +183,7 @@ pred_uc = results.get_forecast(steps=500)
 # Get confidence intervals of forecasts
 pred_ci = pred_uc.conf_int()
 
-ax = y.plot(label='observed', figsize=(20, 15))
+ax = y.plot(label='observed', figsize=(11.7, 8.27))
 pred_uc.predicted_mean.plot(ax=ax, label='Forecast')
 ax.fill_between(pred_ci.index,
                 pred_ci.iloc[:, 0],
@@ -216,5 +193,5 @@ ax.set_ylabel('Vazão')
 
 plt.legend()
 plt.show(sns)
-
+'''
 ###############################################################################

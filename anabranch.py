@@ -1,44 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Out 19 18:10:04 2019
+Created on Sat Oct 19 23:18:14 2019
 
-@author: Raul Dias Barboza
+ANAbranch(jequitinhonha v2.0)
 """
+###############################################################################
+
 import os
 import pandas as pd
 import seaborn as sns
-from pathlib import Path
 #import matplotlib.pyplot as plt
 
-#user = 'familia' # O usuário atual do seu computador
-user = str(Path.home())
-raw = 'c:\\Users\\' + user + '\\Downloads\\Dados_Raw'
-
-# Uncomment for Linux
-chuvas =            user + '/Downloads/Dados_Raw/chuvas'
-cotas =             user + '/Downloads/Dados_Raw/cotas'
-curvadescarga =     user + '/Downloads/Dados_Raw/curvadescarga'
-PerfilTransversal = user + '/Downloads/Dados_Raw/PerfilTransversal'
-qualagua =          user + '/Downloads/Dados_Raw/qualagua'
-ResumoDescarga =    user + '/Downloads/Dados_Raw/ResumoDescarga'
-sedimentos =        user + '/Downloads/Dados_Raw/sedimentos'
-vazoes =            user + '/Downloads/Dados_Raw/vazoes'
-
-'''
-# Uncomment for Windows
-chuvas =            'c:\\Users\\' + user + '\\Downloads\\Dados_Raw\\chuvas'
-cotas =             'c:\\Users\\' + user + '\\Downloads\\Dados_Raw\\cotas'
-curvadescarga =     'c:\\Users\\' + user + '\\Downloads\\Dados_Raw\\curvadescarga'
-PerfilTransversal = 'c:\\Users\\' + user + '\\Downloads\\Dados_Raw\\PerfilTransversal'
-qualagua =          'c:\\Users\\' + user + '\\Downloads\\Dados_Raw\\qualagua'
-ResumoDescarga =    'c:\\Users\\' + user + '\\Downloads\\Dados_Raw\\ResumoDescarga'
-sedimentos =        'c:\\Users\\' + user + '\\Downloads\\Dados_Raw\\sedimentos'
-vazoes =            'c:\\Users\\' + user + '\\Downloads\\Dados_Raw\\vazoes'
-'''
-
-#Set color, type and size of plots
+# Cor, tipo e forma dos Gráficos
 sns.set(style="darkgrid")
-sns.set(rc={'figure.figsize':(11.7, 8.27)})#tamanho de um A4
+sns.set(rc={'figure.figsize':(11.7, 8.27)})
+sns.set_context("paper", rc={"lines.linewidth": 2})
 
 ###############################################################################
 # As primeiras funções auxiliam a extrair os dados dos arquivos csv da ANA
@@ -54,8 +30,7 @@ def ls(path):
 def stationPathtoCode(file,skiprows=12):
     ''' retorna o codigo da estação em um caminho de arquivo '''
     return pd.read_csv(file, delimiter=';',
-                       decimal=",",
-                       header=0,
+                       decimal=",", header=0,
                        skiprows=skiprows,
                        index_col=False,
                        usecols=[0]).loc[0, 'EstacaoCodigo']
@@ -71,13 +46,22 @@ def stationsAt(path):
     return [stationPathtoCode(ls(path)[i])
             for i, _ in enumerate(ls(path))]
 
-def stationData(file, skiprows=12):
+def readFile(file, skiprows=12):
     ''' retorna um dataframe com os dados de um arquivo '''
     return pd.read_csv(file, delimiter=';',
-                       decimal=",",
-                       header=0,
+                       decimal=",", header=0,
                        skiprows=skiprows,
                        index_col=False)
+
+def stationData(file):
+    ''' garante que o arquivo tem sua primeira coluna correta
+    e retorna um dataframe com os dados de um arquivo '''
+    data = readFile(file,16)
+    skiprows = 16
+    while data.columns[0] != 'EstacaoCodigo':
+        skiprows -= 1
+        data = readFile(file,skiprows)
+    return data
 
 def systemData(path, skiprows=12):
     ''' retorna um dataframe com os dados de vários arquivos em um caminho '''
@@ -95,7 +79,7 @@ def stationAttributes(data):
     return data.columns
 
 def stationMean(data, target):
-    ''' retorna a média aritimética de um atributo alvo de um arquivo '''
+    ''' retorna a média aritimética do atributo alvo de um arquivo '''
     return data[target].mean()
 
 def systemMean(path, target):
@@ -103,12 +87,11 @@ def systemMean(path, target):
     return systemData(path)[target].mean()
 
 def stationMeanofMeans(path, target):
-    ''' retorna a média das média aritimética de um atributo alvo dos arquivos de um caminho '''
+    ''' retorna a média aritimética das médias de um atributo alvo dos arquivos de um caminho '''
     return pd.DataFrame([stationMean(ls(path)[i], target)
                          for i, _ in enumerate(ls(path))]).mean()
 
 # E as funções que serão mais utilizadas:
-        
 def datetimeSorted(data):
     ''' converte a coluna 'Data' para datetime se não estiver e ordena cronológicamente '''
     if data['Data'].dtypes != 'datetime64':
@@ -125,7 +108,7 @@ def targetVar(data, target):
 
 ###############################################################################
 # As funções abaixo plotam gráficos de linha utilizando tais dataframes
-    
+
 def stationLineplot(data, target,
                     after=False, before=False,
                     minimus=False, maximus=False):
@@ -133,43 +116,47 @@ def stationLineplot(data, target,
     utilizando os dados do dataframe passado '''
     data = datetimeSorted(data)
     data = targetVar(data,target)
-    
+
     if minimus: data = data[data[target] > minimus]
     if maximus: data = data[data[target] < maximus]
     if after: data = data[data['Data'] > after]
     if before: data = data[data['Data'] < before]
-    
+
     return sns.lineplot(x="Data", y=target, data=data)
-    
-def systemLineplot(path, target,
+
+def systemLineplot(data, target,
                    after=False, before=False,
-                   minimus=False, maximus=False, skiprows=12):
+                   minimus=False, maximus=False):
     ''' retorna um gráfico de linha do atributo alvo pelo tempo 
     utilizando os dados de todos os arquivos csv do caminho passado '''
-    data = systemData(path, skiprows)
     data = datetimeSorted(data)
     targetVar(data,target)
-    
+
     if minimus: data = data[data[target] > minimus]
     if maximus: data = data[data[target] < maximus]
     if after: data = data[data['Data'] > after]
     if before: data = data[data['Data'] < before]
-    
+
     graph = sns.lineplot(x="Data", y=target, legend="full",
                             hue="EstacaoCodigo", data=data)
-    
+
     graph.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
     return graph
 
 ###############################################################################
 # Trabalhando com os dados diários em forma de séries temporais
-    
-def dailyOccurences(data,target=['Chuva01','Vazao01','Cota01']):
+
+def checkDay(day, data):
+    ''' data é um dataframe e day é uma string de 2 digitos entre 00 e 31 '''
+    for i, j in enumerate(data.columns):
+        if data.columns[i].endswith(day):
+            return j
+
+def dailyOccurences(data):
     ''' retorna apenas as ocorrencias diárias do dataframe.
     a primeira coluna é a data as outras 31 são as ocorrências '''
-    target = list(set(target).intersection(data.columns))[0]
     while data.columns[0] != 'Data': data.drop(data.columns[0],axis=1,inplace=True)
-    while data.columns[1] != target: data.drop(data.columns[1],axis=1,inplace=True)
+    while data.columns[1] != checkDay('01', data): data.drop(data.columns[1],axis=1,inplace=True)
     while len(data.columns) > 32: data.drop(data.columns[32],axis=1,inplace=True)
     return data
 
@@ -181,12 +168,9 @@ def dailySeries(data):
     data = datetimeSorted(data)
     return data
 
-def checkStation(code):
+def checkPathforCode(code, path):
     ''' procura pelo codigo da estação nos diretórios e retorna True caso encontre '''
-    print('Checado em: chuvas, vazoes, cotas')
-    return code in stationsAt(chuvas), code in stationsAt(vazoes), code in stationsAt(cotas)
+    print('Checado em:', path)
+    return code in stationsAt(path)
 
 ###############################################################################
-# Utilizando as funções para trabalhar os dados
-
-graomogolvazao = stationCodetoPath(vazoes, 54150000)
