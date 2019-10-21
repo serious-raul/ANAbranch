@@ -1,6 +1,6 @@
 # Rio Jequitinhonha: Variações dos Aspectos Naturais e de Usos Humanos
 
-Este repositório é um auxílio ao uso da ferramenta batizada de 'ANAbranch' criada para o estudo de dados sobre os atributos do Rio Jequitinhonha providos pela ANA. 'Anabranching' é um tipo de canal que se desassocia do canal principal e o encontra novamente em outro ponto do rio. ANA é a agência nacional de águas.
+Este repositório é um auxílio ao uso da ferramenta batizada de 'ANAbranch' criada para o estudo de dados sobre os atributos do Rio Jequitinhonha providos pela ANA. 'Anabranching' é um tipo de canal que se desassocia do canal principal e o encontra novamente em outro ponto do rio. ANA é a Agência Nacional de Águas do Brasil.
 
 A ferramenta faz parte do Trabalho de Conclusão de Curso intitulado 'Rio Jequitinhonha Variações dos Aspectos Naturais e de Usos Humanos' entregue ao Instituto do Mar da UNIFESP como pré-requisito para graduação e foi projetada para tornar mais simples a análise gráfica e numérica dos dados da ANA.
 
