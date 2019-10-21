@@ -8,7 +8,8 @@ A ferramenta faz parte do Trabalho de Conclusão de Curso intitulado 'Rio Jequit
 
 ```
 arquivo = 'c:\\Users\\User\\Downloads\\Dados\\arquivo.csv'
-data = stationData(arquivo)
+import anabranch as ab
+data = ab.stationData(arquivo)
 ```
 
 O exemplo de código acima lê os dados de um arquivo csv retirado da ANA e o transforma em um pandas.DataFrame
