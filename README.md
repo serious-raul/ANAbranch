@@ -66,7 +66,7 @@ ab.systemLineplot(cotas, 'Media', False, '1980')
 ![githubexample2](https://user-images.githubusercontent.com/52804741/66140889-446a6c80-e5d9-11e9-9dcf-8cee5e1ad893.png)
 
 O formato de séries temporais que o anabranch cria permite que implementemos análises e regressões como por exemplo ARIMA.
-O gráfico abaixo é uma decomposição dos componentes estocásticos da série ks.graomogol que utilzado no início.
+O gráfico abaixo é uma decomposição dos componentes estocásticos da série ks.graomogol utilzado no início do artigo.
 
 ```
 decomposition = sm.tsa.seasonal_decompose(y, model='additive', freq=12)
