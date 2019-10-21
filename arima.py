@@ -37,7 +37,11 @@ data = data[data['Data'] < '2006'] # e 2006
 data = data.set_index('Data') # usando as Datas como índice
 
 ###############################################################################
-
+'''
+Daqui em diante os códigos foram retirados de um tutorial do usuário Thomas Vincent do site Digital Ocean, com algumas modificações.
+Agradeço ao trabalho do Thomas, boa parte desse trabalho não seria possível sem seu código. O código está disponível no site:
+https://www.digitalocean.com/community/tutorials/a-guide-to-time-series-forecasting-with-arima-in-python-3
+'''
 y = data # como os dados estão no formato correto podemos definilo como 'y'
 y = y['value'].resample('MS').mean()
 y.dropna(inplace=True)
