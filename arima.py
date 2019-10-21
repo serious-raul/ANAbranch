@@ -20,8 +20,8 @@ import matplotlib.pyplot as plt
 # Cor, tipo e forma dos Gráficos
 plt.style.use('fivethirtyeight')
 sns.set(style="darkgrid")
-sns.set(rc={'figure.figsize':(11.7, 8.27)})
-sns.set_context("paper", rc={"lines.linewidth": 2})
+sns.set(rc={'figure.figsize':(15, 6)})
+sns.set_context("paper", font_scale=1.4, rc={"lines.linewidth": 2.5})
 
 ###############################################################################
 
@@ -33,7 +33,7 @@ data = ab.dailySeries(data) # no formato de série temporal
 data = ab.datetimeSorted(data) # em ordem cronológica
 data = ab.targetVar(data,'value') # apenas a variável alvo
 #data = data[data['Data'] > '1975'] # entre 1975
-data = data[data['Data'] < '2006'] # e 2006
+#data = data[data['Data'] < '2006'] # e 2006
 data = data.set_index('Data') # usando as Datas como índice
 
 ###############################################################################
@@ -46,17 +46,14 @@ y = data # como os dados estão no formato correto podemos definilo como 'y'
 y = y['value'].resample('MS').mean()
 y.dropna(inplace=True)
 
-y.plot(figsize=(11.7, 8.27))
+y.plot(figsize=(15, 6))
 
 plt.show(sns)
-
-sns.lineplot(x=data.index, y=data['value'], data=data)
-sns.lineplot(x=data.index, y=data['value'].mean(), data=data)
 
 ###############################################################################
 
 from pylab import rcParams
-rcParams['figure.figsize'] = 11.7, 8.27
+rcParams['figure.figsize'] = 15, 6
 
 y.isnull().sum()
 
@@ -121,7 +118,7 @@ print("### Min_AIC_list ### \n{}".format(Min_AIC_list))
 
 print(results.summary().tables[1])
 
-results.plot_diagnostics(figsize=(11.7, 8.27))
+results.plot_diagnostics(figsize=(15, 6))
 plt.show(sns)
 #\END{FORUM CODE}
 
@@ -155,7 +152,7 @@ print('The Mean Squared Error of our forecasts is {}'.format(round(mse, 2)))
 pred_dynamic = results.get_prediction(start=pd.to_datetime('1998-01-01').tz_localize('UTC'), dynamic=True, full_results=True)
 pred_dynamic_ci = pred_dynamic.conf_int()
 
-ax = y['1990':].plot(label='observed', figsize=(11.7, 8.27))
+ax = y['1990':].plot(label='observed', figsize=(15, 6))
 pred_dynamic.predicted_mean.plot(label='Dynamic Forecast', ax=ax)
 
 ax.fill_between(pred_dynamic_ci.index,
@@ -165,7 +162,7 @@ ax.fill_between(pred_dynamic_ci.index,
 ax.fill_betweenx(ax.get_ylim(), pd.to_datetime('1998-01-01').tz_localize('UTC'), y.index[-1],
                  alpha=.1, zorder=-1)
 
-ax.set_xlabel('Date')
+ax.set_xlabel('Data')
 ax.set_ylabel('Vazão')
 
 plt.legend()
@@ -187,7 +184,7 @@ pred_uc = results.get_forecast(steps=500)
 # Get confidence intervals of forecasts
 pred_ci = pred_uc.conf_int()
 
-ax = y.plot(label='observed', figsize=(11.7, 8.27))
+ax = y.plot(label='observed', figsize=(15, 6))
 pred_uc.predicted_mean.plot(ax=ax, label='Forecast')
 ax.fill_between(pred_ci.index,
                 pred_ci.iloc[:, 0],
@@ -199,3 +196,7 @@ plt.legend()
 plt.show(sns)
 '''
 ###############################################################################
+
+sns.lineplot(x=data.index, y=data['value'], data=data)
+sns.lineplot(x=data.index, y=data['value'].mean(), data=data)
+decomposition.plot()
