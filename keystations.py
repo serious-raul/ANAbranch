@@ -44,7 +44,7 @@ irape_date = '01-06-2006' #2002
 itapebi_date = '01-02-2003' #1999
 
 # UTILIZANDO DADOS DA ESTAÇÃO IRAPE
-irapevazao = ab.stationCodetoPath(vazoes, 54140000) # itapebi é a estação nº 54140000
+irapevazao = ab.stationCodetoPath(vazoes, 54140000) # irapé é a estação nº 54140000
 
 # imediatamente depois da irape
 graomogolchuva = ab.stationCodetoPath(chuvas, 1642007) 
