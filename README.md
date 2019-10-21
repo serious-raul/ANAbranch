@@ -11,11 +11,11 @@ arquivo = 'c:\\Users\\User\\Downloads\\Dados\\arquivo.csv''
 data = stationData(arquivo)
 ```
 
-O exemplo de código acima lê os dados de um arquivo csv retirado da ANA e o transforma em um pandas.DataFrame
+> O exemplo de código acima lê os dados de um arquivo csv retirado da ANA e o transforma em um pandas.DataFrame
 
 ![Captura de tela de 2019-10-20 23-34-21](https://user-images.githubusercontent.com/52804741/67172566-36b33600-f392-11e9-9eab-efd94a188917.png)
 
-Podemos agora utilizar funções da biblioteca anabranch para transformar os dados em uma série temporal e plotá-los.
+> Podemos agora utilizar funções da biblioteca anabranch para transformar os dados em uma série temporal e plotá-los.
 
 ```
 import anabranch as ab
@@ -26,7 +26,7 @@ data = ab.datetimeSorted(data) # em ordem cronológica
 data = ab.targetVar(data,'value') # apenas a variável alvo
 ```
 
-Todas as funções acima estão disponíveis em anabranch e trabalham com o dataframe da forma indicada. Mais alguns tratamentos permitem que os dados sejam graficados:
+> Todas as funções acima estão disponíveis em anabranch e trabalham com o dataframe da forma indicada. Mais alguns tratamentos permitem que os dados sejam graficados:
 
 ```
 data = data[data['Data'] > '1975'] # entre 1975
@@ -36,7 +36,7 @@ data.dropna(inplace=True) # excluindo ocorrências nulas
 data.plot(figsize=(15, 6)) # figura de 15'' por 6''
 plt.show(sns) # gráfico usando seaborn
 ```
-Finalmente:
+> Finalmente:
 
 ![estocasticmean](https://user-images.githubusercontent.com/52804741/67172410-9eb54c80-f391-11e9-99bb-f183e364f913.png)
 
