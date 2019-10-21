@@ -7,7 +7,7 @@ A ferramenta faz parte do Trabalho de Conclusão de Curso intitulado 'Rio Jequit
 É escrita na linguagem de programação python e utiliza as bibliotecas os, pandas e seaborn distribuídas pela plataforma Anaconda 3, compiladas no IDE Spyder (python 3.7.3).
 
 ```
-arquivo = 'c:\\Users\\User\\Downloads\\Dados\\arquivo.csv''
+arquivo = 'c:\\Users\\User\\Downloads\\Dados\\arquivo.csv'
 data = stationData(arquivo)
 ```
 
